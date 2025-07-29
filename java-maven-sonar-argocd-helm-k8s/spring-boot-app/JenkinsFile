@@ -50,28 +50,28 @@ pipeline {
       }
     }
 
-   stage('Update Deployment File') {
-    environment {
-        GIT_REPO_NAME = "Jenkins-Zero-To-Hero"
-        GIT_USER_NAME = "kamrann90-web"
+ stage('Update Deployment File') {
+  environment {
+    GIT_REPO_NAME = "Jenkins-Zero-To-Hero"
+    GIT_USER_NAME = "kamran90-web"
+  }
+  steps {
+    checkout([$class: 'GitSCM',
+      branches: [[name: 'main']],
+      userRemoteConfigs: [[url: 'https://github.com/kamran90-web/Jenkins-Zero-To-Hero.git']]
+    ])
+    withCredentials([string(credentialsId: 'github', variable: 'GITHUB_TOKEN')]) {
+      sh '''
+        git config user.email "kammy2cool@gmail.com"
+        git config user.name "Kamran saeed"
+        sed -i "s/replaceImageTag/${BUILD_NUMBER}/g" java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml
+        git add java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml
+        git commit -m "Update deployment image to version ${BUILD_NUMBER}"
+        git push https://${GITHUB_TOKEN}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME}.git HEAD:main
+      '''
     }
-    steps {
-        withCredentials([string(credentialsId: 'github', variable: 'GITHUB_TOKEN')]) {
-            sh '''
-                git config user.email "kammy2cool@gmail.com"
-                git config user.name "Kamran saeed"
-                # Replace the image tag directly in the deployment manifest
-                sed -i "s/replaceImageTag/${BUILD_NUMBER}/g" java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml
-
-                # Commit the changes
-                git add java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml
-                git commit -m "Update deployment image to version ${BUILD_NUMBER}"
-
-                # Push back to GitHub using the token (no need to cd anywhere)
-                git push https://${GITHUB_TOKEN}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME}.git HEAD:main
-            '''
-        }
-    }
+  }
 }
+
   }
 }
