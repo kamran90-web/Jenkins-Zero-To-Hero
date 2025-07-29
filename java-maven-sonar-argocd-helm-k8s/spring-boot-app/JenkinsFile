@@ -1,7 +1,7 @@
 pipeline {
   agent {
     docker {
-      image 'carlossg/maven-node-docker:3.8.7-17'
+     image 'trion/maven-docker:3.8.7-openjdk-17'
       args '--user root -v /var/run/docker.sock:/var/run/docker.sock'
     }
   }
