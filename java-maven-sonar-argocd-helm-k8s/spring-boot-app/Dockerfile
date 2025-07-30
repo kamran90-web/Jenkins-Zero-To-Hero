@@ -1,7 +1,7 @@
 FROM adoptopenjdk/openjdk11:alpine-jre
 
 # Install necessary packages
-RUN apk update && apk add --no-cache bash curl git
+RUN apk update && apk add --no-cache bash curl git && ln -sf /bin/bash /bin/sh
 
 # Set shell for Jenkins
 SHELL ["/bin/bash", "-c"]
