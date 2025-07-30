@@ -1,13 +1,10 @@
-# You can change this base image to anything else
-# But make sure to use the correct version of Java
-FROM adoptopenjdk/openjdk11:alpine-jre
+# Use Java 17 base image
+FROM eclipse-temurin:17-jdk
 
-# Simply the artifact path
-ARG artifact=target/spring-boot-web.jar
+WORKDIR /app
 
-WORKDIR /opt/app
+COPY . .
 
-COPY ${artifact} app.jar
+RUN ./mvnw clean package -DskipTests
 
-# This should not be changed
-ENTRYPOINT ["java","-jar","app.jar"]
+CMD ["java", "-jar", "target/*.jar"]
