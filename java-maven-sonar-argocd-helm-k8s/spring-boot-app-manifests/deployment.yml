@@ -2,10 +2,9 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: spring-boot-app
-  labels:
-    app: spring-boot-app
+  namespace: testing
 spec:
-  replicas: 2
+  replicas: 3
   selector:
     matchLabels:
       app: spring-boot-app
@@ -17,3 +16,9 @@ spec:
       containers:
       - name: spring-boot-app
         image: kamran623/ultimate-cicd:62
+        ports:
+        - containerPort: 8080
+        env:
+        - name: SPRING_PROFILES_ACTIVE
+          value: "prod"  # optional, use what your app needs
+
